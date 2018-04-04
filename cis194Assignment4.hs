@@ -1,6 +1,7 @@
 ---- Assignment 4 ------
 
 import Data.List 
+import Control.Applicative
 
 -- theirs
 fun1 :: [Integer] -> Integer
@@ -49,3 +50,12 @@ cartProd xs ys = [(x, y) | x <- xs, y <- ys ]
 sieveSundaram :: Integer -> [Integer]
 sieveSundaram n = map ((+) 1 . (*) 2) $ [1..n] \\ sieve
     where sieve = filter (<= n) [ i+j+2*i*j | (i, j) <- cartProd [1..n] [1..n], i <= j ]
+    
+-- improvements from irc
+sieveSundaram' :: Integer -> [Integer]
+sieveSundaram' n = map (\x -> x*2+1) $ [1..n] \\ sieve
+    where
+        sieve = filter (<= n) nums
+        nums = [ i+j+2*i*j | (i, j) <- cartProd, i <= j]
+        cartProd = liftA2 (,) [1..n] [1..n]
+    
