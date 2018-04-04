@@ -37,25 +37,52 @@ data MessageTree = Leaf
 parseMessage :: String -> LogMessage
 parseMessage message =
     case msgType of 
-        Just (messageType, remMsg) -> if length remMsg == 2 && isNumber (head remMsg) 
-                                      then LogMessage messageType (read (head remMsg)) (last remMsg)
+        Just (messageType, remMsg) -> if length remMsg >= 2 && isNumber (head remMsg) 
+                                      then LogMessage messageType (read (head remMsg)) (unwords (tail remMsg))
                                       else Unknown (unwords remMsg)
         Nothing -> Unknown message
-    where msgType = parseMessage' $ words message
+    where msgType = parseMsgType $ words message
   
-parseMessage' :: [String] -> Maybe (MessageType, [String])
-parseMessage' (x:xs) = case x of "W" -> Just (Warning, xs)
-                                 "I" -> Just (Info, xs)
-                                 "E" -> if length xs > 0 && isNumber (head xs)
-                                        then Just (Error (read (head xs) :: Int), tail xs)
-                                        else Nothing
-                                 _   -> Nothing
-         
+parseMsgType :: [String] -> Maybe (MessageType, [String])
+parseMsgType (x:xs) = case x of "W" -> Just (Warning, xs)
+                                "I" -> Just (Info, xs)
+                                "E" -> if length xs > 0 && isNumber (head xs)
+                                       then Just (Error (read (head xs) :: Int), tail xs)
+                                       else Nothing
+                                _   -> Nothing
+
 isNumber :: String -> Bool
 isNumber [] = True
 isNumber (x:xs) = Char.isDigit x && isNumber xs
 
-    
+parse :: String -> [LogMessage]
+parse = map parseMessage . lines
+
+insertMsg :: LogMessage -> MessageTree -> MessageTree
+insertMsg (Unknown _) t = t
+insertMsg msg Leaf = Node Leaf msg Leaf
+insertMsg msg (Node l node r) = if getTimeStamp msg >= getTimeStamp node
+                             then Node (insertMsg msg l) node r 
+                             else Node l node (insertMsg msg r)   
+                                                         
+getTimeStamp :: LogMessage -> TimeStamp
+getTimeStamp (Unknown _) = error "Unknown log message has no time stamp"
+getTimeStamp (LogMessage _ ts _) = ts
+
+build :: [LogMessage] -> MessageTree
+build = foldr insertMsg Leaf
+
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node l msg r) = (inOrder l) ++ [msg] ++ (inOrder r) 
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong = map (\(LogMessage _ _ s) -> s) . filter ((>50) . getError)
+
+getError :: LogMessage -> Int
+getError (LogMessage (Error n) _ _) = n
+getError _ = 0
+
 -- | @testParse p n f@ tests the log file parser @p@ by running it
 --   on the first @n@ lines of file @f@.
 testParse :: (String -> [LogMessage])
