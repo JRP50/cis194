@@ -62,8 +62,8 @@ insertMsg :: LogMessage -> MessageTree -> MessageTree
 insertMsg (Unknown _) t = t
 insertMsg msg Leaf = Node Leaf msg Leaf
 insertMsg msg (Node l node r) = if getTimeStamp msg >= getTimeStamp node
-                             then Node (insertMsg msg l) node r 
-                             else Node l node (insertMsg msg r)   
+                                then Node (insertMsg msg l) node r 
+                                else Node l node (insertMsg msg r)   
                                                          
 getTimeStamp :: LogMessage -> TimeStamp
 getTimeStamp (Unknown _) = error "Unknown log message has no time stamp"
