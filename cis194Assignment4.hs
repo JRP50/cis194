@@ -55,7 +55,7 @@ sieveSundaram n = map ((+) 1 . (*) 2) $ [1..n] \\ sieve
 sieveSundaram' :: Integer -> [Integer]
 sieveSundaram' n = map (\x -> x*2+1) $ [1..n] \\ sieve
     where
-        sieve = filter (<= n) nums
-        nums = [ i+j+2*i*j | (i, j) <- cartProd, i <= j]
+        sieve    = filter (<= n) nums
+        nums     = [ i+j+2*i*j | (i, j) <- cartProd, i <= j]
         cartProd = liftA2 (,) [1..n] [1..n]
     
