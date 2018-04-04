@@ -16,6 +16,7 @@ hanoi n s t d = hanoi (n-1) s d t
              ++ [(s, d)]
              ++ hanoi (n-1) t s d
 
+             
 
 ---- Assignment 2 ------
 
@@ -100,3 +101,14 @@ testWhatWentWrong :: (String -> [LogMessage])
                   -> IO [String]
 testWhatWentWrong parse whatWentWrong file
   = whatWentWrong . parse <$> readFile file
+  
+
+  
+---- Assignment 3 ------
+
+skips :: [a] -> [[a]]
+skips xs = [ [x | (x, y) <- zip xs (cycle [1..z]),  z == y] | z <- [1..(length xs)] ]
+
+
+
+
