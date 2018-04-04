@@ -58,4 +58,16 @@ sieveSundaram' n = map (\x -> x*2+1) $ [1..n] \\ sieve
         sieve    = filter (<= n) nums
         nums     = [ i+j+2*i*j | (i, j) <- cartProd, i <= j]
         cartProd = liftA2 (,) [1..n] [1..n]
+        
+--- another take from irc - my favorite
+sieveSundaram' :: Integer -> [Integer]
+sieveSundaram' n = [ x * 2 + 1 | x <- allNums \\ sieve ]
+    where
+        allNums = [1..n]
+        sieve   = do
+            (i, j) <- LiftA2 (,) allNums allNums
+            guard (i <= j)
+            let v = i + j + 2 * i * j
+            guard (v <= n)
+            pure v
     
