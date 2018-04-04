@@ -109,6 +109,10 @@ testWhatWentWrong parse whatWentWrong file
 skips :: [a] -> [[a]]
 skips xs = [ [x | (x, y) <- zip xs (cycle [1..z]),  z == y] | z <- [1..(length xs)] ]
 
-
+localMaxima :: [Integer] -> [Integer]
+localMaxima xs
+    | length xs < 3 = []
+    | otherwise     = if y > x && y > z then y:localMaxima l else localMaxima l
+        where (x:l@(y:z:_)) = xs
 
 
