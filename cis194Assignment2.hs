@@ -1,24 +1,8 @@
------ Assignments from http://www.seas.upenn.edu/~cis194/spring13/lectures.html ---
+---- Assignment 2 ------
 
 import Data.List
-import Control.Applicative
 import Text.Read
 import qualified Data.Char as Char
-
-
----- Assignment 1 ------
-type Peg = String
-type Move = (Peg, Peg)
-
-hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
-hanoi 0 s _ d = [(s, d)]
-hanoi n s t d = hanoi (n-1) s d t
-             ++ [(s, d)]
-             ++ hanoi (n-1) t s d
-
-             
-
----- Assignment 2 ------
 
 data MessageType = Info
                  | Warning
@@ -101,25 +85,17 @@ testWhatWentWrong :: (String -> [LogMessage])
                   -> IO [String]
 testWhatWentWrong parse whatWentWrong file
   = whatWentWrong . parse <$> readFile file
-  
 
-  
----- Assignment 3 - Code golf -----
 
-skips :: [a] -> [[a]]
-skips xs = [ [x | (x, y) <- zip xs (cycle [1..z]),  z == y] | z <- [1..(length xs)] ]
 
-localMaxima :: [Int] -> [Int]
-localMaxima xs
-    | length xs < 3 = []
-    | otherwise     = if y > x && y > z then y:localMaxima l else localMaxima l
-        where (x:l@(y:z:_)) = xs
-        
-histogram :: [Int] -> String
-histogram xs = unlines . reverse $ [['0'..'9']] ++ ["=========="] ++ hist
-    where hist = map (foldl' (\acc x -> acc ++ (take (x - (length acc)) (cycle " ")) ++ "*") []) . transpose . group $ sort xs 
 
----- Assignment 4 - Different file -----
 
----- Assignment 5 -----
+
+
+
+
+
+
+
+
 
