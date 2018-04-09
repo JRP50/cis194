@@ -40,12 +40,6 @@ streamFromSeed f seed = Cons seed (streamFromSeed f newSeed)
 nats :: Stream Integer
 nats = streamFromSeed (+1) 0
 
-test' :: Stream Integer
-test' = test 2
-
-test :: Int -> Stream Integer
-test n = Cons 1 (Cons n )
-
 -- come back to ruler, need to interleave 0's with multiples of 2 in the form
 -- 1 2 1 3 1 2 1 4 1 2 1 3 1 2 1 5, etc. 
 -- so the algo is something like take list, add n+1 to the end, append original list to the end, and add n+2 and repeat
