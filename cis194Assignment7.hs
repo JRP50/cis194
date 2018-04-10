@@ -1,6 +1,7 @@
 ---- Assignment 7 -----
 import Data.Monoid
 import Sized
+import Scrabble
 
 data JoinList m a = Empty
     | Single m a
@@ -47,4 +48,7 @@ takeJ _ s@(Single _ _) = s
 takeJ n (Append s l r)
     | n <= tagSize l = takeJ n l
     | otherwise      = l +++ takeJ (n - tagSize l) r
+
+scoreLine :: String -> JoinList Score String
+scoreLine s = Single (scoreString s) s
 
