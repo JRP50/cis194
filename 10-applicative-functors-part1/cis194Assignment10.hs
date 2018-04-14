@@ -76,18 +76,25 @@ instance Applicative Parser where
         (y, rem) <- g s
         return $ (x y, rem)
 
--- think I prefer this version from
--- https://github.com/surganov/cis194/blob/master/10/AParser.hs
--- instance Applicative Parser where
-    -- pure a = Parser $ \xs -> Just (a, xs)
-    -- Parser f <*> Parser g = Parser (\xs -> f xs >>= h)
-        -- where
-            -- h (p, ys) = first p <$> g ys
+abParser :: Parser (Char, Char)
+abParser = (,) <$> char 'a' <*> char 'b'
 
-            
-            
-            
-            
+abParser_ :: Parser ()
+abParser_ = (\_ _ -> ()) <$> char 'a' <*> char 'b'
+
+intPair :: Parser [Integer]
+intPair = (\x _ z -> x:z:[]) <$> posInt <*> char ' ' <*> posInt
+
+-- can also compare using the alternative instance of maybe
+instance Alternative Parser where
+    empty                 = Parser $ (\_ -> Nothing)
+    Parser a <|> Parser b = Parser $ \str -> case a str of
+                                                  Nothing -> b str
+                                                  v       -> v
+
+intOrUppercase :: Parser ()
+intOrUppercase = (const () <$> posInt) <|> (const () <$> satisfy isUpper)
+
             
             
             
