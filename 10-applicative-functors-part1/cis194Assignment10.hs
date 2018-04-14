@@ -80,22 +80,23 @@ abParser :: Parser (Char, Char)
 abParser = (,) <$> char 'a' <*> char 'b'
 
 abParser_ :: Parser ()
-abParser_ = (\_ _ -> ()) <$> char 'a' <*> char 'b'
+abParser_ = const () <$> char 'a' <*> char 'b'
 
 intPair :: Parser [Integer]
 intPair = (\x _ z -> x:z:[]) <$> posInt <*> char ' ' <*> posInt
 
 -- can also compare using the alternative instance of maybe
 instance Alternative Parser where
-    empty                 = Parser $ (\_ -> Nothing)
-    Parser a <|> Parser b = Parser $ \str -> case a str of
-                                                  Nothing -> b str
-                                                  v       -> v
+    empty                 = Parser $ (const Nothing)
+    Parser a <|> Parser b = Parser $ \str -> 
+        case a str of
+            Nothing -> b str
+            v       -> v
 
 intOrUppercase :: Parser ()
 intOrUppercase = (const () <$> posInt) <|> (const () <$> satisfy isUpper)
 
-            
+
             
             
             
