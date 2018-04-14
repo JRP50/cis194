@@ -6,9 +6,8 @@
 
 module AParser where
 
-import           Control.Applicative
-
-import           Data.Char
+import Control.Applicative
+import Data.Char
 
 -- A parser for a value of type a is a function which takes a String
 -- represnting the input to be parsed, and succeeds or fails; if it
@@ -59,3 +58,48 @@ posInt = Parser f
 ------------------------------------------------------------
 -- Your code goes below here
 ------------------------------------------------------------
+
+first :: (a -> b) -> (a,c) -> (b,c)
+first f (x,y) = (f x, y)
+
+-- with arrow
+--first :: (a -> b) -> (a,c) -> (b,c)
+--first f = (f . fst &&& snd)
+
+instance Functor Parser where
+    fmap f (Parser g) = Parser $ fmap (first f) . g
+
+instance Applicative Parser where
+    pure a                = Parser $ \str -> Just (a, str)
+    Parser f <*> Parser g = Parser $ \str -> do
+        (x, s)   <- f str
+        (y, rem) <- g s
+        return $ (x y, rem)
+
+-- think I prefer this version from
+-- https://github.com/surganov/cis194/blob/master/10/AParser.hs
+-- instance Applicative Parser where
+    -- pure a = Parser $ \xs -> Just (a, xs)
+    -- Parser f <*> Parser g = Parser (\xs -> f xs >>= h)
+        -- where
+            -- h (p, ys) = first p <$> g ys
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
