@@ -32,5 +32,3 @@ main = do
         (GL l f)  = maxFun hierarchy
     putStrLn $ "Total fun: " ++ (show f)
     mapM_ putStrLn $ map empName l
-        
-    
