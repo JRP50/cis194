@@ -24,3 +24,20 @@ invade :: Battlefield -> Rand StdGen Battlefield
 invade b@(Battlefield att def)
     | att <= 1 || def == 0 = return b
     | otherwise            = battle b >>= invade
+
+successProb :: Battlefield -> Rand StdGen Double
+successProb b = do
+    bfs <- replicateM 1000 $ invade b
+    let noDefs = length . filter (==0) $ map defenders bfs
+    return $ fromIntegral noDefs / 1000
+
+main = do
+  let bf1 = Battlefield 3 2
+  putStrLn "Prob of attackers winning invade for 3 vs 2"
+  print =<< (evalRandIO $ successProb bf1)
+  let bf2 = Battlefield 5 4
+  putStrLn "Prob of attackers winning invade for 5 vs 4"
+  print =<< (evalRandIO $ successProb bf2)
+  let bf3 = Battlefield 4 5
+  putStrLn "Prob of attackers winning invade for 4 vs 5"
+  print =<< (evalRandIO $ successProb bf3)
