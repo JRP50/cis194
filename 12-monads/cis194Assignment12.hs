@@ -20,3 +20,7 @@ newBattleField (Battlefield oldA oldD) att def
             attLost = length $ filter (==False) result
             result  = zipWith (>) att def
 
+invade :: Battlefield -> Rand StdGen Battlefield
+invade b@(Battlefield att def)
+    | att <= 1 || def == 0 = return b
+    | otherwise            = battle b >>= invade
